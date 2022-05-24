@@ -169,7 +169,7 @@ index 237164a9d42..dbbb5ad46d8 100644
       * Activates the current input method of this input context, and grabs
       * the composition area for use by this input context.
 diff --git a/src/java.desktop/unix/classes/sun/awt/X11/XInputMethod.java b/src/java.desktop/unix/classes/sun/awt/X11/XInputMethod.java
-index 2afd7bbefdb..f70dbc727ca 100644
+index 2afd7bbefdb..fac8bc5e9ee 100644
 --- a/src/java.desktop/unix/classes/sun/awt/X11/XInputMethod.java
 +++ b/src/java.desktop/unix/classes/sun/awt/X11/XInputMethod.java
 @@ -28,10 +28,21 @@ package sun.awt.X11;
@@ -313,10 +313,18 @@ index 2afd7bbefdb..f70dbc727ca 100644
      private native void adjustStatusWindow(long window);
  }
 diff --git a/src/java.desktop/unix/classes/sun/awt/X11InputMethod.java b/src/java.desktop/unix/classes/sun/awt/X11InputMethod.java
-index 18e0ba1e7e4..d0b09ac38b9 100644
+index 18e0ba1e7e4..6161bf7f2b0 100644
 --- a/src/java.desktop/unix/classes/sun/awt/X11InputMethod.java
 +++ b/src/java.desktop/unix/classes/sun/awt/X11InputMethod.java
-@@ -57,6 +57,11 @@ public abstract class X11InputMethod extends X11InputMethodBase {
+@@ -33,6 +33,7 @@ import java.awt.AWTException;
+ import java.awt.event.InputMethodEvent;
+ import java.awt.font.TextAttribute;
+ import java.awt.font.TextHitInfo;
++import java.awt.Component;
+ import java.awt.peer.ComponentPeer;
+ import java.text.AttributedString;
+ import java.util.Map;
+@@ -57,6 +58,11 @@ public abstract class X11InputMethod extends X11InputMethodBase {
          super();
      }
  
@@ -328,7 +336,7 @@ index 18e0ba1e7e4..d0b09ac38b9 100644
      /**
       * Reset the composition state to the current composition state.
       */
-@@ -380,6 +385,30 @@ public abstract class X11InputMethod extends X11InputMethodBase {
+@@ -380,6 +386,30 @@ public abstract class X11InputMethod extends X11InputMethodBase {
          }
      }
  
