@@ -12,11 +12,6 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
-          curl -OL https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.1%2B10/OpenJDK18U-jdk_x64_linux_hotspot_18.0.1_10.tar.gz
-          tar zxf OpenJDK18U-jdk_x64_linux_hotspot_18.0.1_10.tar.gz
-          mv jdk-18.0.1+10 adoptium-openjdk-18
-          sudo mv adoptium-openjdk-18 /opt
-
           sudo apt purge azure-cli ghc zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php* -y
           sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/lib/jvm/
           sudo apt update &&
@@ -31,6 +26,12 @@ jobs:
 
           sudo apt autoremove -y
           sudo apt autoclean -y
+
+          curl -OL https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.1%2B10/OpenJDK18U-jdk_x64_linux_hotspot_18.0.1_10.tar.gz
+          tar zxf OpenJDK18U-jdk_x64_linux_hotspot_18.0.1_10.tar.gz
+          mv jdk-18.0.1+10 adoptium-openjdk-18
+          sudo mv adoptium-openjdk-18 /opt
+          rm -rf OpenJDK18U-jdk_x64_linux_hotspot_18.0.1_10.tar.gz
 
       - name: Compile JCEF
         env: 
@@ -56,7 +57,7 @@ jobs:
           mkdir jcef_linux_x64 && tar zxf ../jcef/jcef_linux_x64.tar.gz -C jcef_linux_x64
           git apply -p0 < jb/project/tools/patches/add_jcef_module.patch
           patch -p1 < idea.patch
-          sh ./configure --with-version-string=17 --with-import-modules=./jcef_linux_x64/modular-sdk
+          sh ./configure --with-import-modules=./jcef_linux_x64/modular-sdk
           make images     
 
       - name: Reduce Size

@@ -309,7 +309,7 @@ index 2afd7bbefdb..f70dbc727ca 100644
      private native int releaseXICNative(long px11data);
      private native void setXICFocusNative(long window,
 -                                    boolean value, boolean active);
-+                                          boolean value, boolean active, int[] offxy));
++                                          boolean value, boolean active, int[] offxy);
      private native void adjustStatusWindow(long window);
  }
 diff --git a/src/java.desktop/unix/classes/sun/awt/X11InputMethod.java b/src/java.desktop/unix/classes/sun/awt/X11InputMethod.java
