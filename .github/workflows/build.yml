@@ -1,0 +1,86 @@
+name: Build
+on: 
+  workflow_dispatch: 
+  push:
+    paths:
+      - ".github/workflows/build.yml"
+
+jobs: 
+  linux-x64-build: 
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Install dependencies
+        shell: bash
+        run: |
+          sudo apt purge azure-cli ghc zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php* -y
+          sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/lib/jvm/
+          sudo apt update &&
+          sudo apt upgrade -y &&
+
+          sudo apt install ant autoconf bison build-essential cmake flex git gperf ksh \
+            libasound2-dev libavcodec-dev libavformat-dev libcups2-dev libfontconfig1-dev \
+            libgl1-mesa-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+            libgtk2.0-dev libgtk-3-dev libjpeg-dev libpng-dev libudev-dev libx11-dev libxext-dev \
+            libxml2-dev libxrandr-dev libxrender-dev libxslt1-dev libxt-dev libxtst-dev libxxf86vm-dev \
+            make mercurial openjdk-11-jdk openjdk-17-jdk pkg-config ruby tree x11proto-core-dev x11proto-xf86vidmode-dev zip -y
+
+          sudo apt autoremove -y
+          sudo apt autoclean -y
+
+      - name: Compile JCEF
+        env: 
+          JDK_11: /usr/lib/jvm/java-11-openjdk-amd64
+          ANT_HOME: /usr/share/ant
+        shell: bash
+        run: |
+          git clone https://github.com/JetBrains/jcef.git jcef
+          cd jcef/jb/tools/linux && chmod +x *
+          ./build.sh all
+
+      - name: Compile JetBrainsRuntime with JCEF
+        env: 
+          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+          JDK_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+        shell: bash
+        run: |
+          git config --global core.autocrlf input
+          git clone -b main --single-branch https://github.com/JetBrains/JetBrainsRuntime.git
+          
+          cd JetBrainsRuntime
+          curl -OL https://raw.githubusercontent.com/RikudouPatrickstar/JetBrainsRuntime-for-Linux-x64/master/idea.patch
+          mkdir jcef_linux_x64 && tar zxf ../jcef/jcef_linux_x64.tar.gz -C jcef_linux_x64
+          git apply -p0 < jb/project/tools/patches/add_jcef_module.patch
+          patch -p1 < idea.patch
+          sh ./configure --with-version-string=17 --with-import-modules=./jcef_linux_x64/modular-sdk
+          make images     
+
+      - name: Reduce Size
+        env: 
+          BASE_DIR: build/linux-x86_64-normal-server-release/images
+          JBR_BUNDLE: jbr_jcef
+          JCEF_PATH: ../jcef/jcef_build/native/Release
+        run: |
+          cd JetBrainsRuntime
+          cat jb/project/tools/common/modules.list > modules_tmp.list
+          rm -rf ${BASE_DIR}/${JBR_BUNDLE}
+
+          ${BASE_DIR}/jdk/bin/jlink \
+            --module-path ${BASE_DIR}/jdk/jmods --no-man-pages --compress=2 \
+            --add-modules $(xargs < modules_tmp.list | sed s/" "//g) --output $BASE_DIR/$JBR_BUNDLE
+          
+          cp -R $BASE_DIR/$JBR_BUNDLE $BASE_DIR/jbr
+          rsync -av ${JCEF_PATH}/ $BASE_DIR/$JBR_BUNDLE/lib --exclude="modular-sdk"
+          grep -v "^JAVA_VERSION" ${BASE_DIR}/jdk/release | grep -v "^MODULES" >> $BASE_DIR/$JBR_BUNDLE/release
+          rm -rf ${BASE_DIR}/jbr
+          cp -R ${BASE_DIR}/${JBR_BUNDLE} ${BASE_DIR}/jbr
+          strip ${BASE_DIR}/jbr/lib/**/*.so
+
+          tar zcf jbr.tar.gz ${BASE_DIR}/jbr &&
+          mv jbr.tar.gz ..
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: jbr
+          path: jbr.tar.gz
+          retention-days: 7
