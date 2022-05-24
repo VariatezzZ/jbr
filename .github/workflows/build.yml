@@ -12,6 +12,11 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
+          curl -OL https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.1%2B10/OpenJDK18U-jdk_x64_linux_hotspot_18.0.1_10.tar.gz
+          tar zxf OpenJDK18U-jdk_x64_linux_hotspot_18.0.1_10.tar.gz
+          mv jdk-18.0.1+10 adoptium-openjdk-18
+          sudo mv adoptium-openjdk-18 /opt
+
           sudo apt purge azure-cli ghc zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php* -y
           sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/lib/jvm/
           sudo apt update &&
@@ -22,7 +27,7 @@ jobs:
             libgl1-mesa-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
             libgtk2.0-dev libgtk-3-dev libjpeg-dev libpng-dev libudev-dev libx11-dev libxext-dev \
             libxml2-dev libxrandr-dev libxrender-dev libxslt1-dev libxt-dev libxtst-dev libxxf86vm-dev \
-            make mercurial openjdk-11-jdk openjdk-17-jdk pkg-config ruby tree x11proto-core-dev x11proto-xf86vidmode-dev zip -y
+            make mercurial openjdk-11-jdk pkg-config ruby tree x11proto-core-dev x11proto-xf86vidmode-dev zip -y
 
           sudo apt autoremove -y
           sudo apt autoclean -y
@@ -39,8 +44,8 @@ jobs:
 
       - name: Compile JetBrainsRuntime with JCEF
         env: 
-          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
-          JDK_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+          JAVA_HOME: /opt/adoptium-openjdk-18
+          JDK_HOME: /opt/adoptium-openjdk-18
         shell: bash
         run: |
           git config --global core.autocrlf input
