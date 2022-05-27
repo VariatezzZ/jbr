@@ -59,7 +59,7 @@ jobs:
 
       - name: Reduce Size
         env: 
-          BASE_DIR: build/linux-x86_64-normal-server-release/images
+          BASE_DIR: build/linux-x86_64-server-release/images
           JBR_BUNDLE: jbr_jcef
           JCEF_PATH: ../jcef/jcef_build/native/Release
         run: |
