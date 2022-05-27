@@ -1,4 +1,4 @@
-name: Build
+name: Build JBR
 on: 
   workflow_dispatch: 
   push:
@@ -22,16 +22,10 @@ jobs:
             libgl1-mesa-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
             libgtk2.0-dev libgtk-3-dev libjpeg-dev libpng-dev libudev-dev libx11-dev libxext-dev \
             libxml2-dev libxrandr-dev libxrender-dev libxslt1-dev libxt-dev libxtst-dev libxxf86vm-dev \
-            make mercurial openjdk-11-jdk pkg-config ruby tree x11proto-core-dev x11proto-xf86vidmode-dev zip -y
+            make mercurial openjdk-11-jdk openjdk-17-jdk pkg-config ruby tree x11proto-core-dev x11proto-xf86vidmode-dev zip -y
 
           sudo apt autoremove -y
           sudo apt autoclean -y
-
-          curl -OL https://github.com/adoptium/temurin18-binaries/releases/download/jdk-18.0.1%2B10/OpenJDK18U-jdk_x64_linux_hotspot_18.0.1_10.tar.gz
-          tar zxf OpenJDK18U-jdk_x64_linux_hotspot_18.0.1_10.tar.gz
-          mv jdk-18.0.1+10 adoptium-openjdk-18
-          sudo mv adoptium-openjdk-18 /opt
-          rm -rf OpenJDK18U-jdk_x64_linux_hotspot_18.0.1_10.tar.gz
 
       - name: Compile JCEF
         env: 
@@ -45,15 +39,18 @@ jobs:
 
       - name: Compile JetBrainsRuntime with JCEF
         env: 
-          JAVA_HOME: /opt/adoptium-openjdk-18
-          JDK_HOME: /opt/adoptium-openjdk-18
+          JAVA_HOME: /opt//usr/lib/jvm/java-17-openjdk-amd64
+          JDK_HOME: /opt//usr/lib/jvm/java-17-openjdk-amd64
         shell: bash
         run: |
           git config --global core.autocrlf input
-          git clone -b main --single-branch https://github.com/JetBrains/JetBrainsRuntime.git
+          git clone -b jb17.0.3-b463.3 --single-branch https://github.com/JetBrains/JetBrainsRuntime.git
           
+          curl -OL https://aur.archlinux.org/cgit/aur.git/snapshot/java17-jetbrains-imfix.tar.gz
+          tar zxf java17-jetbrains-imfix.tar.gz
+
           cd JetBrainsRuntime
-          curl -OL https://raw.githubusercontent.com/VariatezzZ/jbr/main/idea.patch
+          cp ../java17-jetbrains-imfix/idea.patch .
           mkdir jcef_linux_x64 && tar zxf ../jcef/jcef_linux_x64.tar.gz -C jcef_linux_x64
           git apply -p0 < jb/project/tools/patches/add_jcef_module.patch
           patch -p1 < idea.patch
