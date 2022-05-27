@@ -78,8 +78,9 @@ jobs:
           cp -R ${BASE_DIR}/${JBR_BUNDLE} ${BASE_DIR}/jbr
           strip ${BASE_DIR}/jbr/lib/**/*.so
 
-          tar zcf jbr.tar.gz ${BASE_DIR}/jbr &&
-          mv jbr.tar.gz ..
+          cp -rf ${BASE_DIR}/jbr ./ &&
+          tar zcf jbr.tar.gz ./jbr &&
+          mv jbr.tar.gz ../
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
