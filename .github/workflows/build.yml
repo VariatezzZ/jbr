@@ -39,8 +39,8 @@ jobs:
 
       - name: Compile JetBrainsRuntime with JCEF
         env: 
-          JAVA_HOME: /opt//usr/lib/jvm/java-17-openjdk-amd64
-          JDK_HOME: /opt//usr/lib/jvm/java-17-openjdk-amd64
+          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+          JDK_HOME: /usr/lib/jvm/java-17-openjdk-amd64
         shell: bash
         run: |
           git config --global core.autocrlf input
