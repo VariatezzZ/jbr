@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: |
           git config --global core.autocrlf input
-          git clone -b jb17.0.3-b469.3 --single-branch https://github.com/JetBrains/JetBrainsRuntime.git
+          git clone -b jb17.0.3-b469.12 --single-branch https://github.com/JetBrains/JetBrainsRuntime.git
           
           curl -OL https://aur.archlinux.org/cgit/aur.git/snapshot/java17-jetbrains-imfix.tar.gz
           tar zxf java17-jetbrains-imfix.tar.gz
