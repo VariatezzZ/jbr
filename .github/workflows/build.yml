@@ -33,8 +33,9 @@ jobs:
           ANT_HOME: /usr/share/ant
         shell: bash
         run: |
-          git clone https://github.com/JetBrains/jcef.git jcef
-          cd jcef/jb/tools/linux && chmod +x *
+          git clone https://github.com/JetBrains/jcef.git
+          cd jcef && git checkout 4ef9139
+          cd jb/tools/linux && chmod +x *
           ./build.sh all
 
       - name: Compile JetBrainsRuntime with JCEF
