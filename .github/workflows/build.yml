@@ -42,10 +42,11 @@ jobs:
         env: 
           JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
           JDK_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+          JBR_VERSION: jb17.0.3-b469.16
         shell: bash
         run: |
           git config --global core.autocrlf input
-          git clone -b jb17.0.3-b469.12 --single-branch https://github.com/JetBrains/JetBrainsRuntime.git
+          git clone -b ${JBR_VERSION} --single-branch https://github.com/JetBrains/JetBrainsRuntime.git
           
           curl -OL https://aur.archlinux.org/cgit/aur.git/snapshot/java17-jetbrains-imfix.tar.gz
           tar zxf java17-jetbrains-imfix.tar.gz
