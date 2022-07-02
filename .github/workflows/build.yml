@@ -5,6 +5,9 @@ on:
     paths:
       - ".github/workflows/build.yml"
 
+env: 
+  JBR_VERSION: jb17.0.3-b498.3
+
 jobs: 
   linux-x64-build: 
     runs-on: ubuntu-latest
@@ -42,7 +45,6 @@ jobs:
         env: 
           JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
           JDK_HOME: /usr/lib/jvm/java-17-openjdk-amd64
-          JBR_VERSION: jb17.0.3-b498.3
         shell: bash
         run: |
           git config --global core.autocrlf input
@@ -81,12 +83,12 @@ jobs:
           strip ${BASE_DIR}/jbr/lib/**/*.so
 
           cp -rf ${BASE_DIR}/jbr ./ &&
-          tar zcf jbr.tar.gz ./jbr &&
-          mv jbr.tar.gz ../
+          tar zcf ${JBR_VERSION}.tar.gz ./jbr &&
+          mv ${JBR_VERSION}.tar.gz ../
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: jbr
-          path: jbr.tar.gz
+          name: ${{env.JBR_VERSION}}
+          path: ./${{env.JBR_VERSION}}.tar.gz
           retention-days: 7
