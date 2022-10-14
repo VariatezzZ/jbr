@@ -6,7 +6,7 @@ on:
       - ".github/workflows/build.yml"
 
 env: 
-  JBR_VERSION: jb17.0.4-b469.53
+  JBR_VERSION: jb17.0.4.1-b646.8
 
 jobs: 
   linux-x64-build: 
