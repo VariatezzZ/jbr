@@ -6,7 +6,7 @@ on:
       - ".github/workflows/build.yml"
 
 env: 
-  JBR_VERSION: jb17.0.4.1-b653.1
+  JBR_VERSION: jb17.0.5-b653.6
 
 jobs: 
   linux-x64-build: 
@@ -17,8 +17,8 @@ jobs:
         run: |
           sudo apt purge azure-cli ghc zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php* -y
           sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /usr/lib/jvm/
-          sudo apt update &&
-          sudo apt upgrade -y &&
+          sudo apt update -y
+          sudo apt upgrade -y
 
           sudo apt install ant autoconf bison build-essential cmake flex git gperf ksh \
             libasound2-dev libavcodec-dev libavformat-dev libcups2-dev libfontconfig1-dev \
