@@ -6,7 +6,7 @@ on:
       - ".github/workflows/build.yml"
 
 env: 
-  JBR_VERSION: jb17.0.5-b653.23
+  JBR_VERSION: jb17.0.5-b653.25
 
 jobs: 
   linux-x64-build: 
@@ -49,7 +49,7 @@ jobs:
           BASE_DIR: build/linux-x86_64-server-release/images
           _ver: 17.0.5
           _jbver1: 653
-          _jbver2: 23
+          _jbver2: 25
         shell: bash
         run: |
           git config --global core.autocrlf input
