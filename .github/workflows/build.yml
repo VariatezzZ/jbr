@@ -108,7 +108,7 @@ jobs:
             --enable-warnings-as-errors=no \
             ${NUM_PROC_OPT} \
 
-          make images
+          make images JOBS=$(nproc)
 
           git apply -p0 < jb/project/tools/patches/add_jcef_module.patch
 
