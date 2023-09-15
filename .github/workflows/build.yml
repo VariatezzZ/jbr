@@ -6,7 +6,7 @@ on:
       - ".github/workflows/build.yml"
 
 env: 
-  JBR_VERSION: jb17.0.7-b964.1
+  JBR_VERSION: jb17.0.8.1-b1059.3
 
 jobs: 
   linux-x64-build: 
@@ -46,16 +46,15 @@ jobs:
           JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
           JDK_HOME: /usr/lib/jvm/java-17-openjdk-amd64
           BASE_DIR: build/linux-x86_64-server-release/images
-          _ver: 17.0.7
-          _jbver1: 964
-          _jbver2: 1
+          _ver: 17.0.8.1
+          _jbver1: 1059
+          _jbver2: 3
         shell: bash
         run: |
           git config --global core.autocrlf input
           git clone -b ${JBR_VERSION} --single-branch https://github.com/JetBrains/JetBrainsRuntime.git
           
-          curl -OL https://aur.archlinux.org/cgit/aur.git/snapshot/java17-jetbrains-imfix.tar.gz
-          tar zxf java17-jetbrains-imfix.tar.gz
+          curl -OL https://github.com/tangruize/JetBrainsRuntime-for-Linux-x64/raw/master/idea.patch
 
           cd JetBrainsRuntime
 
@@ -63,7 +62,7 @@ jobs:
 
           tar xvf ../jcef/jcef_linux_x64.tar.gz -C jcef-jetbrains
 
-          patch -Np1 < ../java17-jetbrains-imfix/idea.patch
+          patch -Np1 < ../idea.patch
 
           NUM_PROC_OPT=''
           MAKEFLAG_J=$(echo ${MAKEFLAGS} | sed -En 's/.*-j([0-9]+).*/\1/p')
